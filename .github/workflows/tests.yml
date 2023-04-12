@@ -32,11 +32,15 @@ jobs:
         run: |
           composer install --no-scripts
 
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
+      - name: Install front-end dependencies
+        run: |
+          npm install
+          npm run build
 
       - name: Prepare Laravel Application
-        run: php artisan key:generate
+        run: |
+          php -r "file_exists('.env') || copy('.env.ci', '.env');"
+          php artisan key:generate
 
       - name: Run Testsuite
         run: vendor/bin/phpunit
