@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserType;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,8 +21,8 @@ class TaskFactory extends Factory
         return [
             'title' => fake()->word(),
             'description' => fake()->sentence(),
-            'assigned_to_id' => fake()->randomNumber(1, 100),
-            'assigned_by_id' => 1
+            'assigned_to_id' => User::where('type', UserType::TYPE_USER->value)->inRandomOrder()->first()->id,
+            'assigned_by_id' => User::where('type', UserType::TYPE_ADMIN->value)->inRandomOrder()->first()->id,
         ];
     }
 }
