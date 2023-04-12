@@ -34,6 +34,7 @@ Route::resource('tasks', TaskController::class)
 
 Route::prefix('ajax')->name('ajax.')->group(function () {
     Route::get('tasks', [TaskController::class, 'getTasksAjax'])->name('tasks');
+    Route::get('users', [TaskController::class, 'getUsersAjax'])->name('users');
 });
 
 require __DIR__.'/auth.php';

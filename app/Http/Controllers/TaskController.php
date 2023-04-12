@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -20,7 +21,10 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        $task = new Task();
+        $users = User::where('type', 1)->inRandomOrder()->limit(10)->get();
+
+        return view('tasks.create', compact('task', 'users'));
     }
 
     /**
@@ -28,7 +32,15 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string',
+            'description' => 'required',
+            'assigned_to_id' => 'required|exists:users,id'
+        ]);
+        $validated['assigned_by_id'] = $request->user()->id;
+        Task::create($validated);
+
+        return redirect(route('tasks.index'));
     }
 
     /**
@@ -87,42 +99,63 @@ class TaskController extends Controller
 
         // Total records
         $totalRecords = Task::select('count(*) as allcount')
-            ->where('title', 'LIKE', "%$searchValue%")
-            ->orWhere('description', 'LIKE', "%$searchValue%")
             ->count();
-        $totalRecordswithFilter = Task::select('count(*) as allcount')
-            ->where('title', 'LIKE', "%$searchValue%")
-            ->orWhere('description', 'LIKE', "%$searchValue%")
+
+        $totalRecordsWithFilter = Task::select('count(*) as allcount')
+            ->where(function ($query) use ($searchValue) {
+                $query->where('title', 'LIKE', "%$searchValue%")
+                    ->orWhere('description', 'LIKE', "%$searchValue%");
+            })
             ->count();
 
         // Fetch records
         $records = Task::orderBy($columnName, $columnSortOrder)
-            ->where('title', 'LIKE', "%$searchValue%")
-            ->orWhere('description', 'LIKE', "%$searchValue%")
+            ->with('user:id,name')
+            ->where(function ($query) use ($searchValue) {
+                $query->where('title', 'LIKE', "%$searchValue%")
+                    ->orWhere('description', 'LIKE', "%$searchValue%");
+            })
             ->skip($start)
             ->take($rowperpage)
             ->get();
 
-        // dd($records->first(), $totalRecords, $searchValue);
-
-        $data_arr = array();
+        $data_arr = [];
 
         foreach ($records as $record) {
             $data_arr[] = [
                 "id" => $record->id,
                 "title" => $record->title,
                 "description" => $record->description,
-                "user_id" => $record->user_id,
+                "user_name" => $record->user->name,
                 "created_at" => $record->created_at->format('Y-m-d h:i:s'),
                 "actions" => $record->id
             ];
         }
-        $response = array(
+        $response = [
             "draw" => intval($draw),
             "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "iTotalDisplayRecords" => $totalRecordsWithFilter,
             "aaData" => $data_arr
-        );
+        ];
+        return response()->json($response);
+    }
+
+    // Fetch records
+    public function getUsersAjax(Request $request)
+    {
+        $search = $request->search;
+
+        $users = User::when($search, function ($query) use ($search) {
+            $query->where('name', 'LIKE', "%$search%");
+        })->orderby('name', 'asc')->select('id', 'name')->limit(10)->get();
+
+        $response = array();
+        foreach ($users as $employee) {
+            $response[] = array(
+                "id" => $employee->id,
+                "text" => $employee->name
+            );
+        }
         return response()->json($response);
     }
 
