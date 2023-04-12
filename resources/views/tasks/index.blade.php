@@ -45,68 +45,69 @@
                 </div>
             </div>
         </div>
-        <x-slot name="scripts">
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    var table = $('#kt_datatable');
-                    $.fn.dataTable.ext.classes.sPageButton = 'relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150';
+    </div>
+    <x-slot name="scripts">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var table = $('#kt_datatable');
+                $.fn.dataTable.ext.classes.sPageButton = 'relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150';
 
-                    // begin first table
-                    table.DataTable({
-                        responsive: true,
-                        searchDelay: 500,
-                        processing: true,
-                        serverSide: true,
-                        ajax: "{{ route('ajax.tasks') }}",
-                        lengthMenu: [5, 10, 25, 50, 100],
-                        pageLength: 10,
-                        language: {
-                            'lengthMenu': 'Display _MENU_',
+                // begin first table
+                table.DataTable({
+                    responsive: true,
+                    searchDelay: 500,
+                    processing: true,
+                    serverSide: true,
+                    ajax: "{{ route('ajax.tasks') }}",
+                    lengthMenu: [5, 10, 25, 50, 100],
+                    pageLength: 10,
+                    language: {
+                        'lengthMenu': 'Display _MENU_',
+                    },
+                    // Order settings
+                    order: [[0, 'desc']],
+                    columnDefs: [
+                        {
+                            targets: 0,
+                            data: 'title',
+                            className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
+                            render: function (data, type, full, meta) {
+                                return `<p class="text-gray-900 whitespace-no-wrap">${data}</p>`
+                            }
                         },
-                        // Order settings
-                        order: [[0, 'desc']],
-                        columnDefs: [
-                            {
-                                targets: 0,
-                                data: 'title',
-                                className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
-                                render: function (data, type, full, meta) {
-                                    return `<p class="text-gray-900 whitespace-no-wrap">${data}</p>`
-                                }
-                            },
-                            {
-                                targets: 1,
-                                data: 'description',
-                                className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
-                                render: function (data, type, full, meta) {
-                                    return `<p class="text-gray-900 whitespace-no-wrap">${data}</p>`
-                                }
-                            },
+                        {
+                            targets: 1,
+                            data: 'description',
+                            className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
+                            render: function (data, type, full, meta) {
+                                return `<p class="text-gray-900 whitespace-no-wrap">${data}</p>`
+                            }
+                        },
 
-                            {
-                                targets: 2,
-                                data: 'user_id',
-                                className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
-                                render: function (data, type, full, meta) {
-                                    return `<p class="text-gray-900 whitespace-no-wrap">${data}</p>`
-                                }
-                            },
-                            {
-                                targets: 3,
-                                data: 'created_at',
-                                className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
-                                render: function (data, type, full, meta) {
-                                    return `<p class="text-gray-900 whitespace-no-wrap">${data}</p>`
-                                }
-                            },
-                            {
-                                targets: 4,
-                                data: 'actions',
-                                orderable: false,
-                                width: '125px',
-                                className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
-                                render: function (data, type, full, meta) {
-                                    return `<x-dropdown>
+                        {
+                            targets: 2,
+                            data: 'user_name',
+                            className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
+                            render: function (data, type, full, meta) {
+                                return `<p class="text-gray-900 whitespace-no-wrap">${data}</p>`
+                            }
+                        },
+                        {
+                            targets: 3,
+                            data: 'created_at',
+                            className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
+                            render: function (data, type, full, meta) {
+                                return `<p class="text-gray-900 whitespace-no-wrap">${data}</p>`
+                            }
+                        },
+                        {
+                            targets: 4,
+                            data: 'actions',
+                            orderable: false,
+                            width: '125px',
+                            className: 'px-5 py-5 border-b border-gray-200 bg-white text-sm',
+                            render: function (data, type, full, meta) {
+                                return `<x-dropdown>
                                         <x-slot name="trigger">
                                             <button>
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400"
@@ -119,25 +120,24 @@
                                         <x-slot name="content">
                                             <x-dropdown-link href="#">
                                                 {{ __('Edit') }}
-                                    </x-dropdown-link>
-                                    <form method="POST"
-                                          action="#">
-                                                @csrf
-                                    @method('delete')
-                                    <x-dropdown-link href="#"
-                                                     onclick="event.preventDefault(); this.closest('form').submit();">
+                                </x-dropdown-link>
+                                <form method="POST"
+                                      action="#">
+@csrf
+                                @method('delete')
+                                <x-dropdown-link href="#"
+                                                 onclick="event.preventDefault(); this.closest('form').submit();">
 {{ __('Delete') }}
-                                    </x-dropdown-link>
-                                </form>
-                            </x-slot>
-                        </x-dropdown>`;
-                                },
-                            }
-                        ],
-                    });
-
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>`;
+                            },
+                        }
+                    ],
                 });
-            </script>
-        </x-slot>
-</x-app-layout>
 
+            });
+        </script>
+    </x-slot>
+</x-app-layout>

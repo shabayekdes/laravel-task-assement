@@ -19,8 +19,8 @@ class TaskFactory extends Factory
         return [
             'title' => fake()->word(),
             'description' => fake()->sentence(),
-            'user_id' => fake()->randomNumber(1, 100),
-            'owner_id' => 1
+            'assigned_to_id' => fake()->randomNumber(1, 100),
+            'assigned_by_id' => 1
         ];
     }
 }
