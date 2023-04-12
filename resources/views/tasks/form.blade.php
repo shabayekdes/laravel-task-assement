@@ -7,12 +7,20 @@
     <x-input-error :messages="$errors->get('title')" class="mt-2"/>
 </div>
 <div class="mt-4">
-    <x-input-label for="users" :value="__('Assigned User')"/>
+    <x-input-label for="users" :value="__('Assigned Name')"/>
     <select id="users" name="assigned_to_id"
             class="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
         <option>Select one</option>
     </select>
     <x-input-error :messages="$errors->get('assigned_to_id')" class="mt-2"/>
+</div>
+<div class="mt-4">
+    <x-input-label for="admins" :value="__('Admin Name')"/>
+    <select id="admins" name="assigned_by_id"
+            class="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+        <option>Select one</option>
+    </select>
+    <x-input-error :messages="$errors->get('assigned_by_id')" class="mt-2"/>
 </div>
 <!-- Description -->
 <div class="mt-4">

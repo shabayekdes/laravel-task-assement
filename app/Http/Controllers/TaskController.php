@@ -11,9 +11,24 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('tasks.index');
+        $search = $request->get('search');
+
+        $tasks = Task::when($request->has('search'), function ($query) use ($search) {
+            $query->where('title', 'LIKE', "%$search%")
+                ->orWhere('description', 'LIKE', "%$search%")
+                ->orWhereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%$search%");
+                })
+                ->orWhereHas('admin', function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%$search%");
+                });
+        })
+            ->latest()
+            ->paginate();
+
+        return view('tasks.index', compact('tasks'));
     }
 
     /**
@@ -35,44 +50,12 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'required|string',
             'description' => 'required',
-            'assigned_to_id' => 'required|exists:users,id'
+            'assigned_to_id' => 'required|exists:users,id',
+            'assigned_by_id' => 'required|exists:users,id'
         ]);
-        $validated['assigned_by_id'] = $request->user()->id;
         Task::create($validated);
 
         return redirect(route('tasks.index'));
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Task $task)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Task $task)
-    {
-        //
     }
 
     /**
@@ -80,7 +63,7 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getTasksAjax(Request $request)
+    public function getTasksListAjax(Request $request)
     {
         ## Read value
         $draw = $request->get('draw');
@@ -140,14 +123,19 @@ class TaskController extends Controller
         $search = $request->search;
 
         $users = User::when($search, function ($query) use ($search) {
-            $query->where('name', 'LIKE', "%$search%");
-        })->orderby('name', 'asc')->select('id', 'name')->limit(10)->get();
+                $query->where('name', 'LIKE', "%$search%");
+            })
+            ->where('type', $request->get('type'))
+            ->orderby('name', 'asc')
+            ->select('id', 'name')
+            ->limit(10)
+            ->get();
 
         $response = array();
-        foreach ($users as $employee) {
+        foreach ($users as $user) {
             $response[] = array(
-                "id" => $employee->id,
-                "text" => $employee->name
+                "id" => $user->id,
+                "text" => $user->name
             );
         }
         return response()->json($response);

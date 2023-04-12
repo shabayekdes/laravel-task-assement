@@ -17,7 +17,27 @@
             $(document).ready(function () {
                 $("#users").select2({
                     ajax: {
-                        url: "{{route('ajax.users')}}",
+                        url: "{{route('ajax.users', ['type' => 1])}}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                _token: CSRF_TOKEN,
+                                search: params.term // search term
+                            };
+                        },
+                        processResults: function (response) {
+                            return {
+                                results: response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+
+                $("#admins").select2({
+                    ajax: {
+                        url: "{{route('ajax.users', ['type'=>2])}}",
                         dataType: 'json',
                         delay: 250,
                         data: function (params) {

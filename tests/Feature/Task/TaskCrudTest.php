@@ -40,9 +40,7 @@ class TaskCrudTest extends TestCase
         // seed data
         $this->seed([UserSeeder::class]);
 
-        $tasks = Task::factory(10)->create([
-            'assigned_by_id' => $this->admin->id
-        ]);
+        $tasks = Task::factory(10)->create();
 
         // call api
         $response = $this->get(route('tasks.index'));

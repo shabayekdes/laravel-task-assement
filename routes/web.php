@@ -20,7 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -32,8 +32,9 @@ Route::resource('tasks', TaskController::class)
     ->middleware(['auth', 'verified']);
 
 Route::prefix('ajax')->name('ajax.')->group(function () {
-    Route::get('tasks', [TaskController::class, 'getTasksAjax'])->name('tasks');
-    Route::get('users', [TaskController::class, 'getUsersAjax'])->name('users');
+    Route::get('tasks', [TaskController::class, 'getTasksListAjax'])->name('tasks.list');
+    Route::get('users/search', [TaskController::class, 'getUsersAjax'])->name('users');
+    Route::get('users', [DashboardController::class, 'getUsersListAjax'])->name('users.list');
 });
 
 require __DIR__.'/auth.php';
