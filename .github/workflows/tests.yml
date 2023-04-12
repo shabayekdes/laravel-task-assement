@@ -7,7 +7,7 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: true
@@ -28,9 +28,14 @@ jobs:
           tools: composer:v2
           coverage: none
 
-      - name: Install dependencies
+      - name: Install composer dependencies
         run: |
-           composer update --prefer-dist --no-interaction --no-progress
+          composer install --no-scripts
 
-      - name: Execute tests
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.ci .env
+          php artisan key:generate
+
+      - name: Run Testsuite
         run: vendor/bin/phpunit
