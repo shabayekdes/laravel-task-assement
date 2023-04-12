@@ -9,16 +9,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: test
-        ports:
-          - 33306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=1
-
     strategy:
       fail-fast: true
       matrix:
@@ -42,10 +32,11 @@ jobs:
         run: |
           composer install --no-scripts
 
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.ci', '.env');"
+
       - name: Prepare Laravel Application
-        run: |
-          cp .env.ci .env
-          php artisan key:generate
+        run: php artisan key:generate
 
       - name: Run Testsuite
         run: vendor/bin/phpunit
