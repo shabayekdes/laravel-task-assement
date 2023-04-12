@@ -1,20 +1,22 @@
 <x-app-layout>
-    <div class="container mx-auto px-4 sm:px-8 max-w-7xl">
-        <div class="py-8">
-            <div class="flex flex-row mb-1 sm:mb-0 justify-between w-full">
-                <h2 class="text-2xl leading-tight">
-                    Tasks
-                </h2>
-                <div class="text-end">
-                    <div>
-                        <a href="{{ route('tasks.create') }}"
-                           class="py-2 px-4 bg-gray-800 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg">
-                            Add New
-                        </a>
-                    </div>
+    <x-slot name="header">
+        <div class="flex flex-row mb-1 sm:mb-0 justify-between w-full">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Tasks') }}
+            </h2>
+            <div class="text-end">
+                <div>
+                    <a href="{{ route('tasks.create') }}"
+                       class="py-2 px-4 bg-gray-800 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg">
+                        Add New
+                    </a>
                 </div>
             </div>
+        </div>
 
+    </x-slot>
+    <div class="container mx-auto px-4 sm:px-8 max-w-7xl">
+        <div class="py-8">
             <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4">
                 <div class="inline-block min-w-full shadow rounded-lg">
                     <table class="min-w-full leading-normal" id="kt_datatable">
@@ -49,11 +51,10 @@
     <x-slot name="scripts">
         <script type="text/javascript">
             $(document).ready(function () {
-                var table = $('#kt_datatable');
                 $.fn.dataTable.ext.classes.sPageButton = 'relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150';
 
                 // begin first table
-                table.DataTable({
+                let table = $('#kt_datatable').DataTable({
                     responsive: true,
                     searchDelay: 500,
                     processing: true,
@@ -64,8 +65,7 @@
                     language: {
                         'lengthMenu': 'Display _MENU_',
                     },
-                    // Order settings
-                    order: [[0, 'desc']],
+                    ordering: false,
                     columnDefs: [
                         {
                             targets: 0,
@@ -137,6 +137,9 @@
                     ],
                 });
 
+                setInterval(function () {
+                    table.ajax.reload(null, false);
+                }, 3000);
             });
         </script>
     </x-slot>

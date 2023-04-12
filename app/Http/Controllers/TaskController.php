@@ -86,15 +86,9 @@ class TaskController extends Controller
         $draw = $request->get('draw');
         $start = $request->get("start");
         $rowperpage = $request->get("length"); // Rows display per page
-
-        $columnIndex_arr = $request->get('order');
-        $columnName_arr = $request->get('columns');
-        $order_arr = $request->get('order');
         $search_arr = $request->get('search');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+
         $searchValue = $search_arr['value']; // Search value
 
         // Total records
@@ -109,14 +103,14 @@ class TaskController extends Controller
             ->count();
 
         // Fetch records
-        $records = Task::orderBy($columnName, $columnSortOrder)
-            ->with('user:id,name')
+        $records = Task::with('user:id,name')
             ->where(function ($query) use ($searchValue) {
                 $query->where('title', 'LIKE', "%$searchValue%")
                     ->orWhere('description', 'LIKE', "%$searchValue%");
             })
             ->skip($start)
             ->take($rowperpage)
+            ->latest()
             ->get();
 
         $data_arr = [];
