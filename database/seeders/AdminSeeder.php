@@ -20,7 +20,7 @@ class AdminSeeder extends Seeder
             'type' => UserType::TYPE_ADMIN->value
         ]);
 
-        \App\Models\User::factory(10)->create([
+        \App\Models\User::factory(100)->create([
             'type' => UserType::TYPE_ADMIN->value
         ]);
     }
