@@ -63,61 +63,6 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getTasksListAjax(Request $request)
-    {
-        ## Read value
-        $draw = $request->get('draw');
-        $start = $request->get("start");
-        $rowperpage = $request->get("length"); // Rows display per page
-        $search_arr = $request->get('search');
-
-
-        $searchValue = $search_arr['value']; // Search value
-
-        // Total records
-        $totalRecords = Task::select('count(*) as allcount')
-            ->count();
-
-        $totalRecordsWithFilter = Task::select('count(*) as allcount')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('title', 'LIKE', "%$searchValue%")
-                    ->orWhere('description', 'LIKE', "%$searchValue%");
-            })
-            ->count();
-
-        // Fetch records
-        $records = Task::with('user:id,name')
-            ->where(function ($query) use ($searchValue) {
-                $query->where('title', 'LIKE', "%$searchValue%")
-                    ->orWhere('description', 'LIKE', "%$searchValue%");
-            })
-            ->skip($start)
-            ->take($rowperpage)
-            ->latest()
-            ->get();
-
-        $data_arr = [];
-
-        foreach ($records as $record) {
-            $data_arr[] = [
-                "id" => $record->id,
-                "title" => $record->title,
-                "description" => $record->description,
-                "user_name" => $record->user->name,
-                "created_at" => $record->created_at->format('Y-m-d h:i:s'),
-                "actions" => $record->id
-            ];
-        }
-        $response = [
-            "draw" => intval($draw),
-            "iTotalRecords" => $totalRecords,
-            "iTotalDisplayRecords" => $totalRecordsWithFilter,
-            "aaData" => $data_arr
-        ];
-        return response()->json($response);
-    }
-
-    // Fetch records
     public function getUsersAjax(Request $request)
     {
         $search = $request->search;

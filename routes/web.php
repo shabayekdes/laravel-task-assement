@@ -32,7 +32,6 @@ Route::resource('tasks', TaskController::class)
     ->middleware(['auth', 'verified']);
 
 Route::prefix('ajax')->name('ajax.')->group(function () {
-    Route::get('tasks', [TaskController::class, 'getTasksListAjax'])->name('tasks.list');
     Route::get('users/search', [TaskController::class, 'getUsersAjax'])->name('users');
     Route::get('users', [DashboardController::class, 'getUsersListAjax'])->name('users.list');
 });
