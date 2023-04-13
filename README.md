@@ -49,7 +49,7 @@ php artisan serve
 - open your browser and click on http://127.0.0.1:8000/ and click on login page 
 
 ```
-email: test@example.com
+email: admin@example.com
 password: 12345678
 ```
 
