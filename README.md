@@ -1,6 +1,6 @@
 # laravel-task-assement
 
-[Tasks estimates](wiki/tasks)
+A project that enables the admin to create and assign tasks to non-admin users. [Tasks estimates](https://github.com/shabayekdes/laravel-task-assement/wiki)
 
 ### Clone Repo
 
