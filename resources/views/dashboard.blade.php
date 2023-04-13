@@ -73,9 +73,9 @@
                     ],
                 });
 
-                setInterval(function () {
-                    table.ajax.reload(null, false);
-                }, 3000);
+                // setInterval(function () {
+                //     table.ajax.reload(null, false);
+                // }, 3000);
             });
         </script>
     </x-slot>
