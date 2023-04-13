@@ -28,6 +28,13 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
+- npm install
+
+```bash
+npm install
+npm run dev
+```
+
 - Run migrations command and seed database with fake data
 
 ```bash
